@@ -19,13 +19,17 @@ const theme = extendTheme({ colors });
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <AuthProvider>
-      <SocketProvider>
-        <ProjectProvider>
+    <SocketProvider>
+    <ProjectProvider>
+        
           <BrowserRouter>
-            <ChakraProvider theme={theme}>{children}</ChakraProvider>
-          </BrowserRouter>
-        </ProjectProvider>
-      </SocketProvider>
+    <ChakraProvider theme={theme}>
+      <App />
+    </ChakraProvider>
+    </BrowserRouter>
+      
+    </ProjectProvider>
+    </SocketProvider>
     </AuthProvider>
   </StrictMode>
 );
