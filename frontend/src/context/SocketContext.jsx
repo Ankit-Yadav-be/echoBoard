@@ -7,7 +7,7 @@ export const SocketProvider = ({ children }) => {
   const [socket, setSocket] = useState(null);
 
   useEffect(() => {
-    const newSocket = io('https://echoboard.onrender.com/'); 
+    const newSocket = io('https://echoboard.onrender.com'); 
     setSocket(newSocket);
 
     return () => newSocket.disconnect();

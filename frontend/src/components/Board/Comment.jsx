@@ -13,7 +13,7 @@ import { useEffect, useRef, useState } from 'react';
 import API from '../../services/api';
 import io from 'socket.io-client';
 
-const socket = io(import.meta.env.VITE_BACKEND_URL || 'https://echoboard.onrender.com/');
+const socket = io(import.meta.env.VITE_BACKEND_URL || 'https://echoboard.onrender.com');
 
 // Get user from localStorage
 const getLoggedInUser = () => {
