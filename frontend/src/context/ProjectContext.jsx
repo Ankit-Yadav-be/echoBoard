@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import API from '../services/api';
+import { useAuth } from './AuthContext'; 
 
 export const ProjectContext = createContext();
 
@@ -7,16 +8,14 @@ export const ProjectProvider = ({ children }) => {
   const [projects, setProjects] = useState([]);
   const [selectedProject, setSelectedProject] = useState(null);
 
-
-  const isLoggedIn = !!localStorage.getItem('token'); 
-
+  const { token } = useAuth(); 
 
   const fetchProjects = async () => {
     try {
       const res = await API.get('/projects/my');
-      console.log(res.data);
       setProjects(res.data);
 
+    
       if (res.data.length && !selectedProject) {
         setSelectedProject(res.data[0]);
       }
@@ -26,13 +25,13 @@ export const ProjectProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    if (isLoggedIn) {
+    if (token) {
       fetchProjects();
     } else {
       setProjects([]);
       setSelectedProject(null);
     }
-  }, [isLoggedIn]);
+  }, [token]); 
 
   return (
     <ProjectContext.Provider
