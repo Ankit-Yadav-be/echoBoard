@@ -1,13 +1,13 @@
 import axios from 'axios';
 
 const API = axios.create({
-  baseURL: 'https://echoboard.onrender.com/api', 
+  baseURL: 'https://echoboard.onrender.com/api',
 });
 
 API.interceptors.request.use((req) => {
-  const user = JSON.parse(localStorage.getItem('user'));
-  if (user?.token) {
-    req.headers.Authorization = `Bearer ${user.token}`;
+  const token = localStorage.getItem('token'); // ✅ Fix here
+  if (token) {
+    req.headers.Authorization = `Bearer ${token}`;
   }
   return req;
 });
