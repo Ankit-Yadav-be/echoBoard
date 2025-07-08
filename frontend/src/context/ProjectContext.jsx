@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import API from '../services/api';
-import { useAuth } from './AuthContext'; 
+import { useAuth } from './AuthContext';
 
 export const ProjectContext = createContext();
 
@@ -15,7 +15,6 @@ export const ProjectProvider = ({ children }) => {
       const res = await API.get('/projects/my');
       setProjects(res.data);
 
-    
       if (res.data.length && !selectedProject) {
         setSelectedProject(res.data[0]);
       }

@@ -5,6 +5,7 @@ import App from "./App.jsx";
 import { BrowserRouter } from "react-router-dom";
 import { SocketProvider } from './context/SocketContext';
 import { ProjectProvider } from "./context/ProjectContext.jsx";
+import { AuthProvider } from "./context/AuthContext.jsx";
 const colors = {
   brand: {
     900: "#1a365d",
@@ -19,11 +20,13 @@ createRoot(document.getElementById("root")).render(
   <StrictMode>
     <SocketProvider>
     <ProjectProvider>
-        <BrowserRouter>
+        <AuthProvider>
+          <BrowserRouter>
     <ChakraProvider theme={theme}>
       <App />
     </ChakraProvider>
     </BrowserRouter>
+        </AuthProvider>
     </ProjectProvider>
     </SocketProvider>
   </StrictMode>
