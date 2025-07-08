@@ -18,16 +18,14 @@ const theme = extendTheme({ colors });
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <SocketProvider>
-    <ProjectProvider>
-        <AuthProvider>
+    <AuthProvider>
+      <SocketProvider>
+        <ProjectProvider>
           <BrowserRouter>
-    <ChakraProvider theme={theme}>
-      <App />
-    </ChakraProvider>
-    </BrowserRouter>
-        </AuthProvider>
-    </ProjectProvider>
-    </SocketProvider>
+            <ChakraProvider theme={theme}>{children}</ChakraProvider>
+          </BrowserRouter>
+        </ProjectProvider>
+      </SocketProvider>
+    </AuthProvider>
   </StrictMode>
 );
