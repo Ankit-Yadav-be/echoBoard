@@ -1,5 +1,3 @@
-// src/pages/Login.jsx
-import { useState } from 'react';
 import {
   Box,
   Input,
@@ -16,17 +14,14 @@ import {
   Text,
 } from '@chakra-ui/react';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
-import { useNavigate } from 'react-router-dom';
 import API from '../../services/api';
-import { useAuth } from '../../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
   const [form, setForm] = useState({ email: '', password: '' });
   const [showPassword, setShowPassword] = useState(false);
-  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const toast = useToast();
-  const { setToken } = useAuth(); 
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -34,22 +29,15 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
     try {
       const res = await API.post('/auth/login', form);
-      const { token, user } = res.data;
-
-    
-      setToken(token);
-      localStorage.setItem('user', JSON.stringify(user));
-
+      localStorage.setItem('user', JSON.stringify(res.data));
       toast({
         title: 'Login successful',
         status: 'success',
         duration: 3000,
         isClosable: true,
       });
-
       navigate('/');
     } catch (err) {
       toast({
@@ -59,12 +47,10 @@ const Login = () => {
         duration: 4000,
         isClosable: true,
       });
-    } finally {
-      setLoading(false);
     }
   };
 
-  // Chakra UI theming
+  // 💡 Themed colors for dark/light mode
   const boxBg = useColorModeValue('white', 'gray.800');
   const inputBg = useColorModeValue('white', 'gray.700');
   const inputBorder = useColorModeValue('gray.300', 'gray.600');
@@ -139,7 +125,6 @@ const Login = () => {
             borderRadius="full"
             fontWeight="bold"
             size="md"
-            isLoading={loading}
             _hover={{ transform: 'scale(1.03)' }}
             transition="all 0.2s ease"
           >
