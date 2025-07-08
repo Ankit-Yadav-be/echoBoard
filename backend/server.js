@@ -35,7 +35,7 @@ app.get("/", (req, res) => {
 const server = http.createServer(app);
 const io = socketIO(server, {
   cors: {
-    origin: "*", // Use specific origin in production
+    origin: "https://echo-board-mu.vercel.app/", // Use specific origin in production
     methods: ["GET", "POST"]
   }
 });
