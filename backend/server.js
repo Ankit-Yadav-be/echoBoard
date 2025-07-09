@@ -20,40 +20,43 @@ const app = express();
 
 const allowedOrigins = ["https://echo-board-mu.vercel.app"];
 
-// ✅ Allow preflight
-app.options("*", cors({
+// ✅ Apply CORS middleware before any routes
+app.use(cors({
   origin: allowedOrigins,
   credentials: true,
 }));
 
-app.use(cors({
+// ✅ Enable preflight across all routes
+app.options("*", cors({
   origin: allowedOrigins,
   credentials: true,
 }));
 
 app.use(express.json());
 
-// ✅ Routes
+// ✅ API routes
 app.use("/api/auth", authRoutes);
 app.use("/api/tasks", taskRoutes);
 app.use("/api/actions", actionRoutes);
 app.use("/api/projects", projectRoutes);
-app.use("/api", commentRoutes); // ✅ Clean and safe
+app.use("/api", commentRoutes); // Correct: no colon param in app.use()
 
 app.get("/", (req, res) => {
   res.send("API is running...");
 });
 
-// ✅ HTTP & Socket.IO
+// ✅ HTTP + WebSocket setup
 const server = http.createServer(app);
+
 const io = socketIO(server, {
   cors: {
-    origin: allowedOrigins,
+    origin: allowedOrigins[0], // Must be a string, not an array
     methods: ["GET", "POST"],
     credentials: true,
   },
 });
 
+// ✅ Socket.IO logic
 io.on("connection", (socket) => {
   console.log(`🔌 New client connected: ${socket.id}`);
 
@@ -72,6 +75,7 @@ io.on("connection", (socket) => {
   });
 });
 
+// ✅ Make io accessible in controllers (optional)
 app.set("io", io);
 
 // ✅ Start server
