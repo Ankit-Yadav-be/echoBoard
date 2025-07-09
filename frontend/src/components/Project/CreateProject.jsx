@@ -1,24 +1,8 @@
 import { useState, useEffect } from 'react';
 import {
-  Box,
-  Input,
-  Button,
-  useToast,
-  FormControl,
-  FormLabel,
-  Checkbox,
-  CheckboxGroup,
-  VStack,
-  Spinner,
-  Text,
-  Heading,
-  useColorModeValue,
-  Divider,
-  Icon,
-  Avatar,
-  HStack,
-  Tooltip,
-  Flex,
+  Box, Input, Button, useToast, FormControl, FormLabel, Checkbox,
+  CheckboxGroup, VStack, Spinner, Text, Heading, useColorModeValue,
+  Divider, Icon, Avatar, HStack, Tooltip, Flex
 } from '@chakra-ui/react';
 import API from '../../services/api';
 import { useProject } from '../../context/ProjectContext';
@@ -53,6 +37,7 @@ const CreateProject = () => {
     if (!name.trim()) return;
 
     try {
+      // Project created with logged-in user as admin (handled server-side)
       const { data: project } = await API.post('/projects', { name });
 
       for (let userId of selectedUserIds) {
@@ -65,7 +50,7 @@ const CreateProject = () => {
 
       toast({
         title: '🎉 Project Created!',
-        description: `${project.name} created with ${selectedUserIds.length} members.`,
+        description: `${project.name} created successfully.`,
         status: 'success',
         duration: 3000,
         isClosable: true,
@@ -86,13 +71,12 @@ const CreateProject = () => {
     }
   };
 
-  // 🌙 Dark mode styling
+  // Theme helpers
   const bg = useColorModeValue('white', 'gray.800');
   const border = useColorModeValue('gray.200', 'gray.700');
   const sectionBg = useColorModeValue('gray.50', 'gray.700');
   const inputText = useColorModeValue('gray.800', 'gray.200');
 
-  // 🔍 Filter users by search term
   const filteredUsers = users.filter((u) =>
     u.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     u.email.toLowerCase().includes(searchTerm.toLowerCase())
@@ -147,6 +131,13 @@ const CreateProject = () => {
           />
         </FormControl>
 
+        {/* Admin Info */}
+        <Box mb={5} p={3} border="1px solid" borderColor="teal.300" borderRadius="md" bg="teal.50">
+          <Text fontSize="sm" color="teal.700">
+            You will be assigned as <strong>Admin</strong> of this project. Only admins can assign tasks.
+          </Text>
+        </Box>
+
         <Divider mb={5} />
 
         {/* Team Members */}
@@ -156,7 +147,6 @@ const CreateProject = () => {
             Select Team Members
           </FormLabel>
 
-          {/* Search Box */}
           <Input
             placeholder="Search users by name or email..."
             value={searchTerm}
