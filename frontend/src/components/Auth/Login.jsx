@@ -32,8 +32,13 @@ const Login = () => {
     e.preventDefault();
     try {
       const res = await API.post('/auth/login', form);
+
+      // ✅ Store user & token
+      localStorage.setItem('token', res.data.token);
       localStorage.setItem('user', JSON.stringify(res.data));
-      localStorage.setItem('token', res.data.token); // ✅ important for ProjectContext token
+
+      // ✅ Trigger ProjectContext to re-fetch projects
+      window.dispatchEvent(new Event('storage'));
 
       toast({
         title: 'Login successful',
@@ -43,7 +48,6 @@ const Login = () => {
       });
 
       navigate('/');
-      window.location.reload(); // ✅ force re-trigger context fetch on home page
     } catch (err) {
       toast({
         title: 'Login failed',
@@ -55,7 +59,6 @@ const Login = () => {
     }
   };
 
-  // 🌙 Themed styles
   const boxBg = useColorModeValue('white', 'gray.800');
   const inputBg = useColorModeValue('white', 'gray.700');
   const inputBorder = useColorModeValue('gray.300', 'gray.600');

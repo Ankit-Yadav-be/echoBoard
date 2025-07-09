@@ -6,13 +6,15 @@ export const ProjectContext = createContext();
 export const ProjectProvider = ({ children }) => {
   const [projects, setProjects] = useState([]);
   const [selectedProject, setSelectedProject] = useState(null);
-  const [token, setToken] = useState(localStorage.getItem('token')); // track token as state
+  const [token, setToken] = useState(() => localStorage.getItem('token'));
 
+  // 🔁 Fetch user's projects
   const fetchProjects = async () => {
     try {
       const res = await API.get('/projects/my');
       setProjects(res.data);
 
+      // Select first project by default if none selected
       if (res.data.length && !selectedProject) {
         setSelectedProject(res.data[0]);
       }
@@ -21,6 +23,7 @@ export const ProjectProvider = ({ children }) => {
     }
   };
 
+  // ✅ Fetch projects if token is available
   useEffect(() => {
     if (token) {
       fetchProjects();
@@ -30,14 +33,25 @@ export const ProjectProvider = ({ children }) => {
     }
   }, [token]);
 
-  // listen to login/logout actions globally
+  // ✅ Listen to login/logout from other tabs or programmatic login
   useEffect(() => {
-    const onStorageChange = () => {
-      setToken(localStorage.getItem('token'));
+    const handleStorageChange = () => {
+      const newToken = localStorage.getItem('token');
+      setToken(newToken);
     };
 
-    window.addEventListener('storage', onStorageChange);
-    return () => window.removeEventListener('storage', onStorageChange);
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
+
+  // ✅ Also listen to manual login (same tab)
+  useEffect(() => {
+    const onLogin = () => {
+      const t = localStorage.getItem('token');
+      setToken(t);
+    };
+    window.addEventListener('project-login', onLogin);
+    return () => window.removeEventListener('project-login', onLogin);
   }, []);
 
   return (
