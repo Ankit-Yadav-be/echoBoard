@@ -6,15 +6,11 @@ export const ProjectContext = createContext();
 export const ProjectProvider = ({ children }) => {
   const [projects, setProjects] = useState([]);
   const [selectedProject, setSelectedProject] = useState(null);
-
-
-  const isLoggedIn = !!localStorage.getItem('token'); 
-
+  const [token, setToken] = useState(localStorage.getItem('token')); // track token as state
 
   const fetchProjects = async () => {
     try {
       const res = await API.get('/projects/my');
-      console.log(res.data);
       setProjects(res.data);
 
       if (res.data.length && !selectedProject) {
@@ -26,13 +22,23 @@ export const ProjectProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    if (isLoggedIn) {
+    if (token) {
       fetchProjects();
     } else {
       setProjects([]);
       setSelectedProject(null);
     }
-  }, [isLoggedIn]);
+  }, [token]);
+
+  // listen to login/logout actions globally
+  useEffect(() => {
+    const onStorageChange = () => {
+      setToken(localStorage.getItem('token'));
+    };
+
+    window.addEventListener('storage', onStorageChange);
+    return () => window.removeEventListener('storage', onStorageChange);
+  }, []);
 
   return (
     <ProjectContext.Provider
