@@ -6,7 +6,7 @@ const {
 } = require('../controllers/commentController');
 const { protect } = require('../middleware/authMiddleware');
 
-router.get('/:taskId/comments', protect, getCommentsForTask);
-router.post('/:taskId/comments', protect, postCommentToTask);
+router.get('/task/:taskId/comments', protect, getCommentsForTask);
+router.post('/task/:taskId/comments', protect, postCommentToTask);
 
 module.exports = router;

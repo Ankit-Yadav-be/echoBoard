@@ -20,26 +20,32 @@ const app = express();
 
 const allowedOrigins = ["https://echo-board-mu.vercel.app"];
 
+// ✅ Allow preflight
+app.options("*", cors({
+  origin: allowedOrigins,
+  credentials: true,
+}));
+
 app.use(cors({
   origin: allowedOrigins,
   credentials: true,
 }));
+
 app.use(express.json());
 
-// ✅ Fixed API Routes
+// ✅ Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/tasks", taskRoutes);
 app.use("/api/actions", actionRoutes);
 app.use("/api/projects", projectRoutes);
-app.use("/api/task", commentRoutes); // ✅ FIXED
+app.use("/api", commentRoutes); // ✅ Clean and safe
 
 app.get("/", (req, res) => {
   res.send("API is running...");
 });
 
-// Create HTTP server and bind Socket.IO
+// ✅ HTTP & Socket.IO
 const server = http.createServer(app);
-
 const io = socketIO(server, {
   cors: {
     origin: allowedOrigins,
@@ -68,7 +74,7 @@ io.on("connection", (socket) => {
 
 app.set("io", io);
 
-// Start Server
+// ✅ Start server
 const PORT = process.env.PORT || 8000;
 server.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
