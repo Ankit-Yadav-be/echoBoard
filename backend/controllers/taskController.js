@@ -15,7 +15,7 @@ const createTask = async (req, res) => {
     githubLink,
     youtubeLink,
     databaseLink,
-    deadline, 
+    deadline,
   } = req.body;
 
   try {
@@ -30,11 +30,20 @@ const createTask = async (req, res) => {
     }
 
     const projectDoc = await Project.findById(project);
-    if (!projectDoc || !projectDoc.members.includes(req.user._id)) {
-      return res.status(403).json({ message: 'You are not a member of this project' });
+    if (!projectDoc) {
+      return res.status(404).json({ message: 'Project not found' });
     }
 
-    //  Smart Assign
+    // ✅ Allow only admins to create tasks
+    const isAdmin = projectDoc.admins?.some(
+      adminId => adminId.toString() === req.user._id.toString()
+    );
+
+    if (!isAdmin) {
+      return res.status(403).json({ message: 'Only project admins can create tasks' });
+    }
+
+    // ✅ Smart Assign
     let assignedUserId = assignedTo;
     if (!assignedTo) {
       const projectTasks = await Task.find({ project });
@@ -58,7 +67,6 @@ const createTask = async (req, res) => {
       assignedUserId = leastLoadedUser;
     }
 
-    //  Create task
     const task = await Task.create({
       title,
       description,
@@ -90,6 +98,7 @@ const createTask = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+
 
 //  Get All Tasks
 const getAllTasks = async (req, res) => {

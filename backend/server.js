@@ -11,13 +11,22 @@ const actionRoutes = require("./routes/actionRoutes");
 const projectRoutes = require("./routes/projectRoutes");
 const commentRoutes = require("./routes/commentRoutes");
 
-require('./utils/reminderWorker');
+require("./utils/reminderWorker");
 
 dotenv.config();
 connectDB();
 
 const app = express();
-app.use(cors());
+
+const allowedOrigins = [
+  "https://echo-board-mu.vercel.app",
+];
+
+app.use(cors({
+  origin: allowedOrigins,
+  credentials: true,
+}));
+
 app.use(express.json());
 
 // API Routes
@@ -33,40 +42,38 @@ app.get("/", (req, res) => {
 
 // Create HTTP server and bind Socket.IO
 const server = http.createServer(app);
+
 const io = socketIO(server, {
   cors: {
-    origin: "https://echo-board-mu.vercel.app", 
-    methods: ["GET", "POST"]
-  }
+    origin: allowedOrigins,
+    methods: ["GET", "POST"],
+    credentials: true,
+  },
 });
 
-//  Socket.IO logic
+// Socket.IO logic
 io.on("connection", (socket) => {
   console.log(`🔌 New client connected: ${socket.id}`);
 
-  // User joins a task room
   socket.on("joinTask", (taskId) => {
     socket.join(taskId);
-    console.log(` Socket ${socket.id} joined room for task: ${taskId}`);
+    console.log(`Socket ${socket.id} joined room for task: ${taskId}`);
   });
 
-  // User sends a new comment
   socket.on("sendComment", ({ taskId, comment }) => {
-    console.log(` New comment on task ${taskId}:`, comment);
-    // Broadcast to all sockets in that task room
+    console.log(`New comment on task ${taskId}:`, comment);
     io.to(taskId).emit("newComment", comment);
   });
 
   socket.on("disconnect", () => {
-    console.log(` Client disconnected: ${socket.id}`);
+    console.log(`Client disconnected: ${socket.id}`);
   });
 });
 
-//  Export io for controller use
 app.set("io", io);
 
 // Start Server
 const PORT = process.env.PORT || 8000;
 server.listen(PORT, () => {
-  console.log(` Server running on port ${PORT}`);
+  console.log(`🚀 Server running on port ${PORT}`);
 });

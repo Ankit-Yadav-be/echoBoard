@@ -22,8 +22,11 @@ const KanbanBoard = () => {
   const [tasks, setTasks] = useState([]);
   const [logs, setLogs] = useState([]);
   const [loadingLogs, setLoadingLogs] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(false);
   const socket = useContext(SocketContext);
   const { selectedProject } = useProject();
+
+  const currentUser = JSON.parse(localStorage.getItem('user'));
 
   const fetchTasks = async () => {
     if (!selectedProject) return;
@@ -46,10 +49,22 @@ const KanbanBoard = () => {
     }
   };
 
+  const checkAdmin = () => {
+    if (selectedProject && currentUser) {
+      const isAdminUser = selectedProject.admins?.some(
+        (admin) => admin._id === currentUser._id || admin === currentUser._id
+      );
+      setIsAdmin(isAdminUser);
+    } else {
+      setIsAdmin(false);
+    }
+  };
+
   useEffect(() => {
     if (selectedProject) {
       fetchTasks();
       fetchLogs();
+      checkAdmin();
     } else {
       setTasks([]);
       setLogs([]);
@@ -68,7 +83,6 @@ const KanbanBoard = () => {
         });
       }
     });
-
 
     socket.on('taskUpdated', (updatedTask) => {
       if (updatedTask.project === selectedProject?._id) {
@@ -136,7 +150,8 @@ const KanbanBoard = () => {
 
   return (
     <Box height="100%" px={2}>
-      <AddTaskForm />
+      {/* ✅ Show AddTaskForm only for admins */}
+      {isAdmin && <AddTaskForm />}
 
       <SimpleGrid columns={{ base: 1, md: 4 }} spacing={6} mt={6}>
         {/* ---- Kanban Columns ---- */}

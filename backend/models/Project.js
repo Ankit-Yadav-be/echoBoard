@@ -17,6 +17,12 @@ const projectSchema = new mongoose.Schema({
     ref: 'User',
     required: true,
   },
+  admins: [  // ✅ new field
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+    },
+  ],
 }, { timestamps: true });
 
 module.exports = mongoose.model('Project', projectSchema);

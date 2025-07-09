@@ -1,7 +1,7 @@
 const Project = require("../models/Project");
 const User = require("../models/User");
 
-// ✅ Create a new project
+// ✅ Create a new project with admin set to creator
 const createProject = async (req, res) => {
   const { name } = req.body;
 
@@ -12,7 +12,8 @@ const createProject = async (req, res) => {
     const project = await Project.create({
       name,
       createdBy: req.user._id,
-      members: [req.user._id], // Add creator as default member
+      members: [req.user._id],
+      admins: [req.user._id], // ✅ creator becomes admin
     });
 
     res.status(201).json(project);
@@ -21,13 +22,11 @@ const createProject = async (req, res) => {
   }
 };
 
-//  Get all projects where current user is a member
+// ✅ Get all projects where user is a member
 const getMyProjects = async (req, res) => {
   try {
-    const projects = await Project.find({
-      members: req.user._id,
-    })
-      .select("name createdAt members")
+    const projects = await Project.find({ members: req.user._id })
+      .select("name createdAt members admins")
       .populate("members", "name email");
 
     res.json(projects);
@@ -36,7 +35,7 @@ const getMyProjects = async (req, res) => {
   }
 };
 
-// Add another user to project
+// ✅ Add user to project — only admins allowed
 const addUserToProject = async (req, res) => {
   const { projectId } = req.params;
   const { userId } = req.body;
@@ -45,10 +44,11 @@ const addUserToProject = async (req, res) => {
     const project = await Project.findById(projectId);
     if (!project) return res.status(404).json({ message: "Project not found" });
 
-    if (!project.createdBy.equals(req.user._id)) {
-      return res
-        .status(403)
-        .json({ message: "Only the project creator can add members" });
+    const isAdmin = project.admins.some((adminId) =>
+      adminId.equals(req.user._id)
+    );
+    if (!isAdmin) {
+      return res.status(403).json({ message: "Only admins can add members" });
     }
 
     if (project.members.includes(userId)) {
@@ -58,14 +58,14 @@ const addUserToProject = async (req, res) => {
     project.members.push(userId);
     await project.save();
 
-    const updatedProject = await Project.findById(projectId).populate("members", "name email");
-    res.json(updatedProject);
+    const updated = await Project.findById(projectId).populate("members", "name email");
+    res.json(updated);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 };
 
-// ✅ Remove a user from the project
+// ✅ Remove user from project — only admins allowed
 const removeUserFromProject = async (req, res) => {
   const { projectId } = req.params;
   const { userId } = req.body;
@@ -74,10 +74,11 @@ const removeUserFromProject = async (req, res) => {
     const project = await Project.findById(projectId);
     if (!project) return res.status(404).json({ message: "Project not found" });
 
-    if (!project.createdBy.equals(req.user._id)) {
-      return res
-        .status(403)
-        .json({ message: "Only the project creator can remove members" });
+    const isAdmin = project.admins.some((adminId) =>
+      adminId.equals(req.user._id)
+    );
+    if (!isAdmin) {
+      return res.status(403).json({ message: "Only admins can remove members" });
     }
 
     // Prevent removing creator
@@ -88,35 +89,35 @@ const removeUserFromProject = async (req, res) => {
     project.members = project.members.filter(
       (id) => id.toString() !== userId
     );
+
+    // Also remove from admins if needed
+    project.admins = project.admins.filter(
+      (id) => id.toString() !== userId
+    );
+
     await project.save();
 
-    const updatedProject = await Project.findById(projectId).populate("members", "name email");
-    res.json(updatedProject);
+    const updated = await Project.findById(projectId).populate("members", "name email");
+    res.json(updated);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 };
 
-// ✅ Get all members of a project
+// ✅ Get project members
 const getProjectMembers = async (req, res) => {
   const { projectId } = req.params;
 
   try {
-    const project = await Project.findById(projectId).populate(
-      "members",
-      "name email"
-    );
+    const project = await Project.findById(projectId).populate("members", "name email");
 
     if (!project) return res.status(404).json({ message: "Project not found" });
 
     const userId = req.user._id.toString();
     const isMember = project.members.some((m) => m._id.toString() === userId);
-    const isCreator = project.createdBy.toString() === userId;
 
-    if (!isMember && !isCreator) {
-      return res
-        .status(403)
-        .json({ message: "You are not a member of this project" });
+    if (!isMember) {
+      return res.status(403).json({ message: "You are not a member of this project" });
     }
 
     res.json(project.members);
@@ -129,6 +130,6 @@ module.exports = {
   createProject,
   getMyProjects,
   addUserToProject,
-  removeUserFromProject, // ✅ added
+  removeUserFromProject,
   getProjectMembers,
 };
