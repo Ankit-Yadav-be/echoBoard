@@ -150,11 +150,51 @@ const KanbanBoard = () => {
 
   return (
     <Box height="100%" px={2}>
-      {/* ✅ Show AddTaskForm only for admins */}
-      {isAdmin && <AddTaskForm />}
+      {/* 👉 Admin-Only Add Task UI */}
+      <Box mb={6}>
+        <Box
+          maxW="lg"
+          mx="auto"
+          bg={useColorModeValue('teal.100', 'teal.700')}
+          p={4}
+          borderRadius="xl"
+          textAlign="center"
+          boxShadow="lg"
+          cursor={isAdmin ? 'pointer' : 'not-allowed'}
+          opacity={isAdmin ? 1 : 0.5}
+          transition="all 0.2s"
+          _hover={{
+            boxShadow: isAdmin ? 'xl' : 'lg',
+            transform: isAdmin ? 'scale(1.02)' : 'none',
+          }}
+          onClick={() => {
+            if (isAdmin) {
+              document
+                .getElementById('add-task-form-section')
+                ?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+          }}
+        >
+          <Text fontWeight="bold" fontSize="lg">
+            ✏️ Click here to add a task
+          </Text>
+          <Text fontSize="sm">
+            {isAdmin
+              ? 'You are an admin of this project.'
+              : 'Only admins can add tasks.'}
+          </Text>
+        </Box>
 
-      <SimpleGrid columns={{ base: 1, md: 4 }} spacing={6} mt={6}>
-        {/* ---- Kanban Columns ---- */}
+        {/* 🧾 Actual Form Hidden Initially */}
+        {isAdmin && (
+          <Box id="add-task-form-section" mt={6}>
+            <AddTaskForm />
+          </Box>
+        )}
+      </Box>
+
+      <SimpleGrid columns={{ base: 1, md: 4 }} spacing={6}>
+        {/* 🧩 Kanban Columns */}
         <Box gridColumn={{ base: '1', md: 'span 3' }} overflowX="auto">
           <DragDropContext onDragEnd={onDragEnd}>
             <Flex gap={6} wrap="nowrap" overflowX="auto" pb={2}>
@@ -216,7 +256,7 @@ const KanbanBoard = () => {
           </DragDropContext>
         </Box>
 
-        {/* ---- Activity Log ---- */}
+        {/* 🕓 Activity Log */}
         <Box
           bg={useColorModeValue('gray.100', 'gray.700')}
           p={4}

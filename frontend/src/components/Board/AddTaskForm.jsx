@@ -40,11 +40,11 @@ const AddTaskForm = () => {
     youtubeLink: '',
     databaseLink: '',
     deadline: '',
-    reminder: '', // ✅ New field
+    reminder: '',
   });
   const [users, setUsers] = useState([]);
   const [useSmartAssign, setUseSmartAssign] = useState(false);
-  const { isOpen, onToggle } = useDisclosure();
+  const { isOpen, onToggle } = useDisclosure({ defaultIsOpen: true });
 
   const fetchUsers = async () => {
     if (!selectedProject) return;
@@ -74,9 +74,7 @@ const AddTaskForm = () => {
         project: selectedProject._id,
       };
 
-      if (useSmartAssign) {
-        delete payload.assignedTo;
-      }
+      if (useSmartAssign) delete payload.assignedTo;
 
       await API.post('/tasks/createtask', payload);
 
@@ -102,15 +100,15 @@ const AddTaskForm = () => {
   const border = useColorModeValue('gray.200', 'gray.600');
 
   return (
-    <Box>
+    <Box id="add-task-form-section">
       <Flex justify="center" mb={4}>
         <Button
           onClick={onToggle}
           size="sm"
           colorScheme="teal"
-          variant="ghost"
+          variant="solid"
           leftIcon={<Icon as={isOpen ? FaChevronUp : FaChevronDown} />}
-          _hover={{ bg: useColorModeValue('teal.50', 'teal.900') }}
+          borderRadius="xl"
         >
           {isOpen ? 'Hide Add Task Form' : 'Show Add Task Form'}
         </Button>
@@ -162,7 +160,6 @@ const AddTaskForm = () => {
                 value={form.description}
                 onChange={handleChange}
                 borderRadius="xl"
-                resize="vertical"
               />
             </FormControl>
 
@@ -199,7 +196,6 @@ const AddTaskForm = () => {
               </FormControl>
             </Flex>
 
-            {/* 🔗 GitHub, YouTube, DB Links */}
             <FormControl>
               <FormLabel>GitHub Link</FormLabel>
               <Input
@@ -233,7 +229,6 @@ const AddTaskForm = () => {
               />
             </FormControl>
 
-            {/* ✅ Deadline */}
             <FormControl>
               <FormLabel display="flex" alignItems="center" gap={2}>
                 <Icon as={FaCalendarAlt} />
@@ -248,7 +243,6 @@ const AddTaskForm = () => {
               />
             </FormControl>
 
-            {/* ✅ Reminder */}
             <FormControl>
               <FormLabel display="flex" alignItems="center" gap={2}>
                 ⏰ Reminder
