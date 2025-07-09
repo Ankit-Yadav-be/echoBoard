@@ -20,10 +20,10 @@ connectDB();
 
 const app = express();
 
-// ✅ Allowed frontend domains
+//  Allowed frontend domains
 const allowedOrigins = ["https://echo-board-mu.vercel.app"];
 
-// ✅ Dynamic CORS middleware for Express
+//  Dynamic CORS middleware for Express
 app.use(cors({
   origin: function (origin, callback) {
     if (!origin || allowedOrigins.includes(origin)) {
@@ -35,25 +35,25 @@ app.use(cors({
   credentials: true,
 }));
 
-// ✅ Handle preflight requests for all routes
+//  Handle preflight requests for all routes
 app.options("*", cors());
 
-// ✅ Express middlewares
+// Express middlewares
 app.use(express.json());
 
-// ✅ Routes
+//  Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/tasks", taskRoutes);
 app.use("/api/actions", actionRoutes);
 app.use("/api/projects", projectRoutes);
-app.use("/api/task/:taskId/comments", commentRoutes);
+app.use("/api/task/", commentRoutes);
 
-// ✅ Base route
+//  Base route
 app.get("/", (req, res) => {
   res.send("🚀 API is running...");
 });
 
-// ✅ Create HTTP server and initialize Socket.IO
+//  Create HTTP server and initialize Socket.IO
 const server = http.createServer(app);
 
 const io = socketIO(server, {
@@ -70,7 +70,7 @@ const io = socketIO(server, {
   },
 });
 
-// ✅ Socket.IO logic
+//  Socket.IO logic
 io.on("connection", (socket) => {
   console.log(`🔌 New client connected: ${socket.id}`);
 
@@ -89,10 +89,10 @@ io.on("connection", (socket) => {
   });
 });
 
-// ✅ Attach io instance to app
+//  Attach io instance to app
 app.set("io", io);
 
-// ✅ Start server
+//  Start server
 const PORT = process.env.PORT || 8000;
 server.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
