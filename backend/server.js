@@ -46,7 +46,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/tasks", taskRoutes);
 app.use("/api/actions", actionRoutes);
 app.use("/api/projects", projectRoutes);
-app.use("/api/task/", commentRoutes);
+app.use("/api/task", commentRoutes);
 
 //  Base route
 app.get("/", (req, res) => {
