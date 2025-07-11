@@ -124,7 +124,6 @@ const Home = () => {
             <Image
               src="/assets/bussiness.jpg"
               alt="Productivity Illustration"
-              maxW={{ base: '100%', md: '520px' }}
               w="100%"
               borderRadius="xl"
               shadow="xl"
