@@ -29,7 +29,7 @@ const MotionBox = motion(Box);
 const Home = () => {
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem('user'));
-  const bg = useColorModeValue('gray.50', 'gray.900');
+  const bg = useColorModeValue('linear(to-b, teal.50, white)', 'linear(to-b, gray.900, gray.800)');
   const textColor = useColorModeValue('gray.700', 'gray.300');
   const { colorMode, toggleColorMode } = useColorMode();
 
@@ -40,15 +40,40 @@ const Home = () => {
   }, [user, navigate]);
 
   return (
-    <Box minH="100vh" bg={bg} py={10} px={6} transition="0.4s ease-in-out">
-      <VStack spacing={10} maxW="6xl" mx="auto">
+    <Box
+      minH="100vh"
+      bgGradient={bg}
+      py={10}
+      px={6}
+      transition="0.4s ease-in-out"
+      overflow="hidden"
+      position="relative"
+    >
+      {/* Background Glow Effect */}
+      <Box
+        position="absolute"
+        top="10%"
+        left="50%"
+        transform="translate(-50%, -50%)"
+        w="400px"
+        h="400px"
+        bg="teal.300"
+        opacity={0.2}
+        filter="blur(120px)"
+        zIndex={0}
+        borderRadius="full"
+      />
+
+      <VStack spacing={10} maxW="6xl" mx="auto" position="relative" zIndex={1}>
         {/* Theme Toggle */}
         <Box w="full" display="flex" justifyContent="flex-end" pr={2}>
           <Button
             size="sm"
             variant="ghost"
+            colorScheme="teal"
             leftIcon={colorMode === 'light' ? <FaMoon /> : <FaSun />}
             onClick={toggleColorMode}
+            _hover={{ transform: 'scale(1.05)' }}
           >
             {colorMode === 'light' ? 'Dark Mode' : 'Light Mode'}
           </Button>
@@ -61,11 +86,16 @@ const Home = () => {
           spacing={10}
           textAlign={{ base: 'center', md: 'left' }}
         >
-          <Box flex={1}>
+          <MotionBox
+            flex={1}
+            initial={{ x: -80, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            transition={{ duration: 0.8 }}
+          >
             <Heading
               as="h1"
               size="2xl"
-              bgGradient="linear(to-r, teal.400, blue.500, purple.500)"
+              bgGradient="linear(to-r, teal.300, blue.400, purple.500)"
               bgClip="text"
               fontWeight="extrabold"
               lineHeight="shorter"
@@ -79,17 +109,21 @@ const Home = () => {
             </Text>
             <HStack spacing={4} justify={{ base: 'center', md: 'flex-start' }}>
               {user ? (
-                <Button colorScheme="teal" size="lg" onClick={() => navigate('/dash')}>
+                <Button
+                  size="lg"
+                  colorScheme="teal"
+                  onClick={() => navigate('/dash')}
+                  _hover={{ transform: 'scale(1.05)' }}
+                >
                   Go to Dashboard
                 </Button>
               ) : (
                 <>
                   <Button
-                    colorScheme="teal"
                     size="lg"
+                    colorScheme="teal"
                     onClick={() => navigate('/login')}
                     _hover={{ transform: 'scale(1.05)' }}
-                    transition="0.3s"
                   >
                     Login
                   </Button>
@@ -98,30 +132,33 @@ const Home = () => {
                     colorScheme="teal"
                     size="lg"
                     onClick={() => navigate('/register')}
-                    _hover={{ transform: 'scale(1.05)', bg: 'teal.500', color: 'white' }}
-                    transition="0.3s"
+                    _hover={{
+                      transform: 'scale(1.05)',
+                      bg: 'teal.500',
+                      color: 'white',
+                      borderColor: 'teal.500',
+                    }}
                   >
                     Register
                   </Button>
                 </>
               )}
             </HStack>
-          </Box>
+          </MotionBox>
 
           <MotionBox
             flex={1}
-            initial={{ scale: 0.95, opacity: 0 }}
+            initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
-            transition={{ duration: 0.8 }}
+            transition={{ duration: 0.9 }}
           >
-          <Image
-  src="/assets/bussiness.jpg"
-  alt="Productivity illustration"
-  maxW="420px"
-  borderRadius="lg"
-  boxShadow="lg"
-/>
-
+            <Image
+              src="/assets/bussiness.jpg"
+              alt="Productivity illustration"
+              maxW="420px"
+              borderRadius="xl"
+              boxShadow="2xl"
+            />
           </MotionBox>
         </Stack>
 
@@ -130,7 +167,8 @@ const Home = () => {
           <Heading
             as="h2"
             size="xl"
-            color="teal.400"
+            bgGradient="linear(to-r, teal.300, blue.400)"
+            bgClip="text"
             fontWeight="bold"
             textAlign="center"
           >
@@ -177,12 +215,12 @@ const Home = () => {
 
 // Feature Card Component
 const FeatureCard = ({ icon, title, description }) => {
-  const cardBg = useColorModeValue('white', 'gray.800');
-  const cardShadow = useColorModeValue('xl', 'dark-lg');
+  const cardBg = useColorModeValue('whiteAlpha.900', 'gray.800');
+  const cardShadow = useColorModeValue('lg', 'dark-lg');
 
   return (
     <MotionBox
-      whileHover={{ scale: 1.05, boxShadow: 'lg' }}
+      whileHover={{ scale: 1.05, rotate: 0.5 }}
       transition={{ type: 'spring', stiffness: 300 }}
       bg={cardBg}
       p={6}
