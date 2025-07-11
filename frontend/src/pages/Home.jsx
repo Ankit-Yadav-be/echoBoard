@@ -122,7 +122,7 @@ const Home = () => {
             transition={{ duration: 0.6 }}
           >
             <Image
-              src="/assets/bussiness.jpg"
+              src="/assets/b2b.jpg"
               alt="Productivity Illustration"
               w="100%"
               shadow="xl"
