@@ -29,7 +29,8 @@ const MotionBox = motion(Box);
 const Home = () => {
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem('user'));
-  const textColor = useColorModeValue('gray.700', 'gray.200');
+  const bg = useColorModeValue('gray.50', 'gray.900');
+  const textColor = useColorModeValue('gray.700', 'gray.300');
   const { colorMode, toggleColorMode } = useColorMode();
 
   useEffect(() => {
@@ -39,31 +40,16 @@ const Home = () => {
   }, [user, navigate]);
 
   return (
-    <Box position="relative" minH="100vh" overflow="hidden">
-      {/* Background Image */}
-      <Image
-        src="/assets/bussiness.jpg"
-        alt="Background"
-        objectFit="cover"
-        w="100%"
-        h="100vh"
-        position="absolute"
-        top={0}
-        left={0}
-        zIndex={-1}
-        filter="brightness(0.6)"
-      />
-
-      {/* Content Overlay */}
-      <VStack spacing={10} maxW="6xl" mx="auto" px={6} pt={10} position="relative" zIndex={1}>
+    <Box minH="100vh" bg={bg} py={10} px={6} transition="0.4s ease-in-out">
+      <VStack spacing={12} maxW="7xl" mx="auto">
         {/* Theme Toggle */}
-        <Box w="full" display="flex" justifyContent="flex-end">
+        <Box w="full" display="flex" justifyContent="flex-end" pr={2}>
           <Button
             size="sm"
             variant="ghost"
-            colorScheme="teal"
             leftIcon={colorMode === 'light' ? <FaMoon /> : <FaSun />}
             onClick={toggleColorMode}
+            colorScheme="teal"
             _hover={{ transform: 'scale(1.05)' }}
           >
             {colorMode === 'light' ? 'Dark Mode' : 'Light Mode'}
@@ -72,67 +58,89 @@ const Home = () => {
 
         {/* Hero Section */}
         <Stack
-          direction="column"
+          direction={{ base: 'column', md: 'row' }}
           align="center"
-          spacing={8}
-          textAlign="center"
-          py={{ base: 10, md: 20 }}
+          spacing={12}
+          textAlign={{ base: 'center', md: 'left' }}
+          w="full"
         >
-          <Heading
-            fontSize={{ base: '3xl', md: '5xl' }}
-            bgGradient="linear(to-r, teal.300, blue.400, purple.500)"
-            bgClip="text"
-            fontWeight="extrabold"
-            lineHeight="shorter"
+          <Box flex={1}>
+            <Heading
+              as="h1"
+              fontSize={{ base: '3xl', md: '5xl' }}
+              bgGradient="linear(to-r, teal.400, blue.400, purple.500)"
+              bgClip="text"
+              fontWeight="extrabold"
+              lineHeight="shorter"
+              mb={4}
+            >
+              Welcome to EchoBoard 🚀
+            </Heading>
+            <Text fontSize={{ base: 'md', md: 'xl' }} color={textColor} mb={6}>
+              Collaborate smarter with real-time task management, AI-powered comments, and dynamic project control — all in one sleek platform.
+            </Text>
+            <HStack spacing={4} justify={{ base: 'center', md: 'flex-start' }}>
+              {user ? (
+                <Button colorScheme="teal" size="lg" onClick={() => navigate('/dash')}>
+                  Go to Dashboard
+                </Button>
+              ) : (
+                <>
+                  <Button
+                    colorScheme="teal"
+                    size="lg"
+                    onClick={() => navigate('/login')}
+                    _hover={{ transform: 'scale(1.05)' }}
+                    transition="0.3s"
+                  >
+                    Login
+                  </Button>
+                  <Button
+                    variant="outline"
+                    colorScheme="teal"
+                    size="lg"
+                    onClick={() => navigate('/register')}
+                    _hover={{
+                      transform: 'scale(1.05)',
+                      bg: 'teal.500',
+                      color: 'white',
+                      borderColor: 'teal.500',
+                    }}
+                    transition="0.3s"
+                  >
+                    Register
+                  </Button>
+                </>
+              )}
+            </HStack>
+          </Box>
+
+          <MotionBox
+            flex={1}
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.6 }}
           >
-            Welcome to EchoBoard 🚀
-          </Heading>
-          <Text fontSize={{ base: 'md', md: 'xl' }} color="white" maxW="3xl">
-            Boost your team’s productivity with real-time task collaboration,
-            live comments, and powerful project control — all in one place.
-          </Text>
-          <HStack spacing={4}>
-            {user ? (
-              <Button size="lg" colorScheme="teal" onClick={() => navigate('/dash')}>
-                Go to Dashboard
-              </Button>
-            ) : (
-              <>
-                <Button
-                  size="lg"
-                  colorScheme="teal"
-                  onClick={() => navigate('/login')}
-                  _hover={{ transform: 'scale(1.05)' }}
-                >
-                  Login
-                </Button>
-                <Button
-                  variant="outline"
-                  colorScheme="teal"
-                  size="lg"
-                  onClick={() => navigate('/register')}
-                  _hover={{
-                    transform: 'scale(1.05)',
-                    bg: 'teal.500',
-                    color: 'white',
-                    borderColor: 'teal.500',
-                  }}
-                >
-                  Register
-                </Button>
-              </>
-            )}
-          </HStack>
+            <Image
+              src="/assets/bussiness.jpg"
+              alt="Productivity Illustration"
+              maxW={{ base: '100%', md: '520px' }}
+              w="100%"
+              borderRadius="xl"
+              shadow="xl"
+              transition="0.4s"
+              _hover={{ transform: 'scale(1.02)' }}
+            />
+          </MotionBox>
         </Stack>
 
         {/* Features Section */}
-        <VStack spacing={8} w="full" pt={{ base: 10, md: 20 }}>
+        <VStack spacing={8} w="full" pt={10}>
           <Heading
             as="h2"
-            size="xl"
-            bgGradient="linear(to-r, teal.300, blue.400)"
-            bgClip="text"
+            fontSize={{ base: '2xl', md: '3xl' }}
             fontWeight="bold"
+            color="teal.400"
             textAlign="center"
           >
             Why EchoBoard?
@@ -142,33 +150,32 @@ const Home = () => {
             direction={{ base: 'column', md: 'row' }}
             spacing={6}
             justify="center"
-            w="full"
             flexWrap="wrap"
           >
             <FeatureCard
               icon={FaTasks}
               title="Smart Task Management"
-              description="Create, assign, and track tasks effortlessly with our drag-and-drop boards."
+              description="Create, assign, and track tasks effortlessly with drag-and-drop boards."
             />
             <FeatureCard
               icon={FaComments}
               title="Live Comments"
-              description="Collaborate in real-time using powerful integrated chat & socket engine."
+              description="Collaborate in real-time using integrated chat powered by Socket.IO."
             />
             <FeatureCard
               icon={FaUserShield}
               title="Role-based Access"
-              description="Maintain control with admin privileges and tailored user roles."
+              description="Admin and member roles with powerful permissions and visibility control."
             />
             <FeatureCard
               icon={FaRocket}
               title="Fast & Scalable"
-              description="Built with modern MERN stack and optimized for performance."
+              description="MERN-powered backend optimized for speed, scalability and real-time."
             />
           </Stack>
         </VStack>
 
-        <Text fontSize="sm" color="gray.200" pt={10}>
+        <Text fontSize="sm" color="gray.500" pt={10}>
           © {new Date().getFullYear()} EchoBoard — Created by Ankit Yadav
         </Text>
       </VStack>
@@ -178,12 +185,12 @@ const Home = () => {
 
 // Feature Card Component
 const FeatureCard = ({ icon, title, description }) => {
-  const cardBg = useColorModeValue('whiteAlpha.900', 'gray.800');
-  const cardShadow = useColorModeValue('lg', 'dark-lg');
+  const cardBg = useColorModeValue('white', 'gray.800');
+  const cardShadow = useColorModeValue('xl', 'dark-lg');
 
   return (
     <MotionBox
-      whileHover={{ scale: 1.05, rotate: 0.5 }}
+      whileHover={{ scale: 1.05 }}
       transition={{ type: 'spring', stiffness: 300 }}
       bg={cardBg}
       p={6}
@@ -191,7 +198,6 @@ const FeatureCard = ({ icon, title, description }) => {
       boxShadow={cardShadow}
       textAlign="center"
       maxW="260px"
-      color={useColorModeValue('gray.700', 'gray.100')}
     >
       <Box fontSize="3xl" mb={4} color="teal.400">
         <Icon as={icon} />
