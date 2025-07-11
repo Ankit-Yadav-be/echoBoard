@@ -8,17 +8,30 @@ import {
   useColorModeValue,
   Image,
   Stack,
+  Icon,
+  useColorMode,
 } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
-import { FaRocket, FaUserShield, FaTasks, FaComments } from 'react-icons/fa';
+import {
+  FaRocket,
+  FaUserShield,
+  FaTasks,
+  FaComments,
+  FaSun,
+  FaMoon,
+} from 'react-icons/fa';
 import { useEffect } from 'react';
 import React from 'react';
+import { motion } from 'framer-motion';
+
+const MotionBox = motion(Box);
 
 const Home = () => {
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem('user'));
-  const bg = useColorModeValue('gray.50', 'gray.800');
-  const textColor = useColorModeValue('gray.700', 'gray.200');
+  const bg = useColorModeValue('gray.50', 'gray.900');
+  const textColor = useColorModeValue('gray.700', 'gray.300');
+  const { colorMode, toggleColorMode } = useColorMode();
 
   useEffect(() => {
     if (user) {
@@ -27,8 +40,20 @@ const Home = () => {
   }, [user, navigate]);
 
   return (
-    <Box minH="100vh" bg={bg} py={10} px={6}>
+    <Box minH="100vh" bg={bg} py={10} px={6} transition="0.4s ease-in-out">
       <VStack spacing={10} maxW="6xl" mx="auto">
+        {/* Theme Toggle */}
+        <Box w="full" display="flex" justifyContent="flex-end" pr={2}>
+          <Button
+            size="sm"
+            variant="ghost"
+            leftIcon={colorMode === 'light' ? <FaMoon /> : <FaSun />}
+            onClick={toggleColorMode}
+          >
+            {colorMode === 'light' ? 'Dark Mode' : 'Light Mode'}
+          </Button>
+        </Box>
+
         {/* Hero Section */}
         <Stack
           direction={{ base: 'column', md: 'row' }}
@@ -40,25 +65,21 @@ const Home = () => {
             <Heading
               as="h1"
               size="2xl"
-              color="teal.400"
-              fontWeight="bold"
-              mb={4}
+              bgGradient="linear(to-r, teal.400, blue.500, purple.500)"
+              bgClip="text"
+              fontWeight="extrabold"
               lineHeight="shorter"
+              mb={4}
             >
-              Welcome to EchoBoard
+              Welcome to EchoBoard 🚀
             </Heading>
             <Text fontSize="lg" color={textColor} mb={6}>
-              A collaborative task management app designed to boost productivity,
-              streamline projects, and keep your team on track. Create tasks, assign
-              members, comment live, and track actions in real-time.
+              Boost your team’s productivity with real-time task collaboration,
+              live comments, and powerful project control — all in one place.
             </Text>
             <HStack spacing={4} justify={{ base: 'center', md: 'flex-start' }}>
               {user ? (
-                <Button
-                  colorScheme="teal"
-                  size="lg"
-                  onClick={() => navigate('/dash')}
-                >
+                <Button colorScheme="teal" size="lg" onClick={() => navigate('/dash')}>
                   Go to Dashboard
                 </Button>
               ) : (
@@ -67,6 +88,8 @@ const Home = () => {
                     colorScheme="teal"
                     size="lg"
                     onClick={() => navigate('/login')}
+                    _hover={{ transform: 'scale(1.05)' }}
+                    transition="0.3s"
                   >
                     Login
                   </Button>
@@ -75,6 +98,8 @@ const Home = () => {
                     colorScheme="teal"
                     size="lg"
                     onClick={() => navigate('/register')}
+                    _hover={{ transform: 'scale(1.05)', bg: 'teal.500', color: 'white' }}
+                    transition="0.3s"
                   >
                     Register
                   </Button>
@@ -82,17 +107,30 @@ const Home = () => {
               )}
             </HStack>
           </Box>
-          <Image
+
+          <MotionBox
             flex={1}
-            src="https://illustrations.popsy.co/gray/task-management.svg"
-            alt="Productivity"
-            maxW="420px"
-          />
+            initial={{ scale: 0.95, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ duration: 0.8 }}
+          >
+            <Image
+              src="/assets/bussiness.jpg"
+              alt="Productivity"
+              maxW="420px"
+            />
+          </MotionBox>
         </Stack>
 
         {/* Features Section */}
         <VStack spacing={8} w="full">
-          <Heading as="h2" size="xl" color="teal.500">
+          <Heading
+            as="h2"
+            size="xl"
+            color="teal.400"
+            fontWeight="bold"
+            textAlign="center"
+          >
             Why EchoBoard?
           </Heading>
 
@@ -106,22 +144,22 @@ const Home = () => {
             <FeatureCard
               icon={FaTasks}
               title="Smart Task Management"
-              description="Create, assign, and track tasks across your projects with intuitive drag-and-drop support."
+              description="Create, assign, and track tasks effortlessly with our drag-and-drop boards."
             />
             <FeatureCard
               icon={FaComments}
               title="Live Comments"
-              description="Collaborate in real-time using our integrated comment system powered by Socket.IO."
+              description="Collaborate in real-time using powerful integrated chat & socket engine."
             />
             <FeatureCard
               icon={FaUserShield}
               title="Role-based Access"
-              description="Admins can control everything, while members stay focused on their responsibilities."
+              description="Maintain control with admin privileges and tailored user roles."
             />
             <FeatureCard
               icon={FaRocket}
               title="Fast & Scalable"
-              description="Built using modern MERN stack with scalability, performance and user experience in mind."
+              description="Built with modern MERN stack and optimized for performance."
             />
           </Stack>
         </VStack>
@@ -136,11 +174,13 @@ const Home = () => {
 
 // Feature Card Component
 const FeatureCard = ({ icon, title, description }) => {
-  const cardBg = useColorModeValue('white', 'gray.700');
-  const cardShadow = useColorModeValue('lg', 'dark-lg');
+  const cardBg = useColorModeValue('white', 'gray.800');
+  const cardShadow = useColorModeValue('xl', 'dark-lg');
 
   return (
-    <Box
+    <MotionBox
+      whileHover={{ scale: 1.05, boxShadow: 'lg' }}
+      transition={{ type: 'spring', stiffness: 300 }}
       bg={cardBg}
       p={6}
       rounded="2xl"
@@ -149,7 +189,7 @@ const FeatureCard = ({ icon, title, description }) => {
       maxW="260px"
     >
       <Box fontSize="3xl" mb={4} color="teal.400">
-        <Box as={icon} />
+        <Icon as={icon} />
       </Box>
       <Heading as="h3" size="md" mb={2}>
         {title}
@@ -157,7 +197,7 @@ const FeatureCard = ({ icon, title, description }) => {
       <Text fontSize="sm" color="gray.500">
         {description}
       </Text>
-    </Box>
+    </MotionBox>
   );
 };
 

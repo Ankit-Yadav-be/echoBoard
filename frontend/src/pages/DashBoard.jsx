@@ -12,8 +12,7 @@ import {
   Flex,
   Text,
   Badge,
-  HStack,
-  IconButton
+  HStack
 } from '@chakra-ui/react';
 import {
   FaTasks,
@@ -60,25 +59,33 @@ const ProjectZen = () => {
       {/* ---------- HEADER ---------- */}
       <Box mb={10} position="relative">
         <Flex justify="flex-end" align="center" gap={3} pr={{ base: 2, md: 8 }} mb={2}>
-          <IconButton
-            aria-label="Toggle theme"
-            icon={colorMode === 'light' ? <FaMoon /> : <FaSun />}
-            onClick={toggleColorMode}
+          {/* Theme Toggle Button */}
+          <Button
             size="sm"
-            colorScheme="gray"
             variant="ghost"
-            _hover={{ transform: 'scale(1.1)' }}
-          />
+            leftIcon={colorMode === 'light' ? <FaMoon /> : <FaSun />}
+            onClick={toggleColorMode}
+            _hover={{ transform: 'scale(1.05)' }}
+            transition="0.3s"
+          >
+            {colorMode === 'light' ? 'Dark Mode' : 'Light Mode'}
+          </Button>
+
+          {/* Logout Button Styled Same as Home */}
           <Button
             size="sm"
             colorScheme="red"
             leftIcon={<FaSignOutAlt />}
             onClick={handleLogout}
+            px={5}
+            _hover={{ transform: 'scale(1.05)' }}
+            transition="0.3s"
           >
             Logout
           </Button>
         </Flex>
 
+        {/* ---------- HERO SECTION ---------- */}
         <Box
           borderRadius="2xl"
           bgGradient={useColorModeValue(
