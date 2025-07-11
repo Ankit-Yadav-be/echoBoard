@@ -77,7 +77,7 @@ const ProjectZen = () => {
             colorScheme="red"
             leftIcon={<FaSignOutAlt />}
             onClick={handleLogout}
-            px={5}
+            px={1}
             _hover={{ transform: 'scale(1.05)' }}
             transition="0.3s"
           >
