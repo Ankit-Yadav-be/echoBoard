@@ -125,7 +125,6 @@ const Home = () => {
               src="/assets/bussiness.jpg"
               alt="Productivity Illustration"
               w="100%"
-              borderRadius="xl"
               shadow="xl"
               transition="0.4s"
               _hover={{ transform: 'scale(1.02)' }}
