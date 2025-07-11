@@ -13,7 +13,7 @@ import { useNavigate } from 'react-router-dom';
 import { FaRocket, FaUserShield, FaTasks, FaComments } from 'react-icons/fa';
 import { useEffect } from 'react';
 
-export const Home = () => {
+ const Home = () => {
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem('user'));
 
@@ -159,3 +159,5 @@ const FeatureCard = ({ icon, title, description }) => {
     </Box>
   );
 };
+
+export default Home;
