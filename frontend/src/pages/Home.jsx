@@ -12,20 +12,19 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { FaRocket, FaUserShield, FaTasks, FaComments } from 'react-icons/fa';
 import { useEffect } from 'react';
+import React from 'react';
 
- const Home = () => {
+const Home = () => {
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem('user'));
+  const bg = useColorModeValue('gray.50', 'gray.800');
+  const textColor = useColorModeValue('gray.700', 'gray.200');
 
   useEffect(() => {
     if (user) {
       navigate('/dash');
     }
   }, [user, navigate]);
-
-  const bg = useColorModeValue('gray.50', 'gray.800');
-  const cardBg = useColorModeValue('white', 'gray.700');
-  const textColor = useColorModeValue('gray.700', 'gray.200');
 
   return (
     <Box minH="100vh" bg={bg} py={10} px={6}>
@@ -49,8 +48,9 @@ import { useEffect } from 'react';
               Welcome to EchoBoard
             </Heading>
             <Text fontSize="lg" color={textColor} mb={6}>
-              A collaborative task management app designed to boost productivity, streamline projects,
-              and keep your team on track. Create tasks, assign members, comment live, and track actions in real-time.
+              A collaborative task management app designed to boost productivity,
+              streamline projects, and keep your team on track. Create tasks, assign
+              members, comment live, and track actions in real-time.
             </Text>
             <HStack spacing={4} justify={{ base: 'center', md: 'flex-start' }}>
               {user ? (
@@ -101,6 +101,7 @@ import { useEffect } from 'react';
             spacing={6}
             justify="center"
             w="full"
+            flexWrap="wrap"
           >
             <FeatureCard
               icon={FaTasks}
@@ -148,7 +149,7 @@ const FeatureCard = ({ icon, title, description }) => {
       maxW="260px"
     >
       <Box fontSize="3xl" mb={4} color="teal.400">
-        {icon && <icon.type />}
+        <Box as={icon} />
       </Box>
       <Heading as="h3" size="md" mb={2}>
         {title}
