@@ -43,7 +43,7 @@ const ProjectZen = () => {
 
   const handleLogout = () => {
     localStorage.removeItem('user');
-    navigate('/dash');
+    navigate('/');
   };
 
   return (
