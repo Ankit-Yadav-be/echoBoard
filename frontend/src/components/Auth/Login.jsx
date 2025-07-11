@@ -47,7 +47,7 @@ const Login = () => {
         isClosable: true,
       });
 
-      navigate('/dash');
+      navigate('/');
     } catch (err) {
       toast({
         title: 'Login failed',
