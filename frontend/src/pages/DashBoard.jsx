@@ -4,7 +4,7 @@ import {
   Icon,
   Divider,
   useColorModeValue,
-  useColorMode,       
+  useColorMode,
   Button,
   Collapse,
   useDisclosure,
@@ -13,7 +13,7 @@ import {
   Text,
   Badge,
   HStack,
-  IconButton         
+  IconButton
 } from '@chakra-ui/react';
 import {
   FaTasks,
@@ -25,8 +25,10 @@ import {
   FaRocket,
   FaMagic,
   FaMoon,
-  FaSun             
+  FaSun,
+  FaSignOutAlt
 } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
 import KanbanBoard from '../components/Board/KanbanBoard';
 import ProjectSelector from '../components/Project/ProjectSelector';
 import CreateProject from '../components/Project/CreateProject';
@@ -36,7 +38,13 @@ const ProjectZen = () => {
   const borderClr = useColorModeValue('gray.200', 'gray.600');
   const subText = useColorModeValue('gray.600', 'gray.400');
   const { isOpen, onToggle } = useDisclosure();
-  const { colorMode, toggleColorMode } = useColorMode(); 
+  const { colorMode, toggleColorMode } = useColorMode();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem('user');
+    navigate('/dash');
+  };
 
   return (
     <Grid
@@ -51,7 +59,7 @@ const ProjectZen = () => {
     >
       {/* ---------- HEADER ---------- */}
       <Box mb={10} position="relative">
-        <Flex justify="flex-end" pr={{ base: 2, md: 8 }} mb={2}>
+        <Flex justify="flex-end" align="center" gap={3} pr={{ base: 2, md: 8 }} mb={2}>
           <IconButton
             aria-label="Toggle theme"
             icon={colorMode === 'light' ? <FaMoon /> : <FaSun />}
@@ -61,6 +69,14 @@ const ProjectZen = () => {
             variant="ghost"
             _hover={{ transform: 'scale(1.1)' }}
           />
+          <Button
+            size="sm"
+            colorScheme="red"
+            leftIcon={<FaSignOutAlt />}
+            onClick={handleLogout}
+          >
+            Logout
+          </Button>
         </Flex>
 
         <Box
