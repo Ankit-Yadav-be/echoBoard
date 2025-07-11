@@ -74,10 +74,10 @@ const ProjectZen = () => {
           {/* Logout Button Styled Same as Home */}
           <Button
             size="sm"
-            colorScheme="red"
+            colorScheme="cyan"
             leftIcon={<FaSignOutAlt />}
             onClick={handleLogout}
-            px={1}
+            px={6}
             _hover={{ transform: 'scale(1.05)' }}
             transition="0.3s"
           >

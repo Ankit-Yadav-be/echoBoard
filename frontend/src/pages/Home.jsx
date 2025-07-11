@@ -114,11 +114,14 @@ const Home = () => {
             animate={{ scale: 1, opacity: 1 }}
             transition={{ duration: 0.8 }}
           >
-            <Image
-              src="/assets/bussiness.jpg"
-              alt="Productivity"
-              maxW="420px"
-            />
+          <Image
+  src="/assets/bussiness.jpg"
+  alt="Productivity illustration"
+  maxW="420px"
+  borderRadius="lg"
+  boxShadow="lg"
+/>
+
           </MotionBox>
         </Stack>
 
